@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Barber Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 10px;
+            background: linear-gradient(to bottom, #e5e5e5, #b0b0b0);
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        .top-bar {
+            background-image: url('images/back.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            margin-bottom: 30px;
+            position: relative;
+            gap: 8px;
+        }
+
+        .top-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.45);
+            border-radius: 8px;
+            z-index: 1;
+        }
+
+        .top-bar h1, .top-bar img, .top-bar .address {
+            position: relative;
+            z-index: 2;
+        }
+
+        .top-bar h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            color: #cc0000;
+            margin: 0 0 5px 0;
+            font-size: 3.5em;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3),
+                         -2px -2px 0 #fff,
+                         2px -2px 0 #fff,
+                         -2px 2px 0 #fff,
+                         2px 2px 0 #fff;
+            text-align: center;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 4px;
+            transform: scale(1.02);
+            transition: transform 0.3s ease;
+            font-weight: 900;
+        }
+
+        .top-bar h1:hover {
+            transform: scale(1.05);
+        }
+
+        .top-bar img {
+            height: 70px;
+            margin-top: 5px;
+        }
+
+        .address, .contact-info {
+            color: #333;
+            font-size: 1em;
+            margin-top: 5px;
+            text-align: center;
+            padding: 4px 15px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 4px;
+            font-weight: 700;
+            z-index: 2;
+            letter-spacing: 0.5px;
+            text-shadow: 0.5px 0.5px 0px rgba(255, 255, 255, 0.8);
+        }
+
+        .opening-hours {
+            font-weight: 800;
+            color: #222;
+        }
+
+        .contact-info {
+            color: #333;
+            font-size: 0.9em;
+            margin-top: 5px;
+            text-align: center;
+            padding: 4px 15px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 4px;
+            font-weight: 500;
+            z-index: 2;
+        }
+
+        .phone-number {
+            color: #cc0000;
+            font-weight: 800;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+
+        .content-wrapper {
+            position: relative;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 12px;
+            margin-top: -10px;
+            box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .featured-photos {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+            max-width: 800px;
+            margin: 0 auto 30px auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .featured-photos img {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 4px;
+            transition: transform 0.3s ease;
+            background-color: #f5f5f5;
+            padding: 10px;
+        }
+
+        .reviews-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            padding: 20px 15px;
+            margin-bottom: 30px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid #c0c0c0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .reviews-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-bottom: 2px solid #e0e0e0;
+            background: linear-gradient(to bottom, #ffffff, #f8f8f8);
+            border-radius: 6px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .reviews-title {
+            font-size: 2.2em;
+            color: #333;
+            margin: 0;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.1);
+        }
+
+        .ratings {
+            display: flex;
+            gap: 15px;
+            font-size: 1.1em;
+            color: #333;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            flex-wrap: wrap;
+        }
+
+        .rating-item {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.05);
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        .reviews-container {
+            display: grid;
+            gap: 20px;
+        }
+
+        .review-card {
+            padding: 20px;
+            border-radius: 6px;
+            background: linear-gradient(to bottom, #ffffff, #f9f9f9);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid #eaeaea;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+        }
+
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .photo-gallery img {
+            width: 100%;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+            border-radius: 4px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            background-color: #f5f5f5;
+            padding: 0;
+            border: 1px solid #000000;
+            box-sizing: border-box;
+        }
+
+        .photo-gallery img:hover {
+            transform: scale(1.02);
+            border-color: #333333;
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .top-bar {
+                padding: 12px;
+                gap: 6px;
+            }
+
+            .top-bar h1 {
+                font-size: 2.8em;
+                padding: 6px 15px;
+                margin: 0 0 4px 0;
+            }
+
+            .top-bar img {
+                height: 60px;
+                margin-top: 4px;
+            }
+
+            .featured-photos,
+            .photo-gallery {
+                grid-template-columns: 1fr;
+                padding: 10px;
+            }
+
+            .reviews-section {
+                padding: 15px 10px;
+            }
+
+            .reviews-header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 10px;
+            }
+
+            .ratings {
+                font-size: 1em;
+            }
+
+            .review-card {
+                padding: 15px;
+            }
+
+            .address, .contact-info {
+                font-size: 0.95em;
+                padding: 5px 15px;
+            }
+        }
+
+        /* Small Mobile Styles */
+        @media (max-width: 480px) {
+            .top-bar {
+                padding: 10px;
+                gap: 4px;
+            }
+
+            .top-bar h1 {
+                font-size: 2.2em;
+                padding: 5px 12px;
+                margin: 0 0 3px 0;
+            }
+
+            .top-bar img {
+                height: 50px;
+                margin-top: 3px;
+            }
+
+            .reviews-title {
+                font-size: 1.8em;
+            }
+
+            .ratings {
+                font-size: 0.95em;
+                gap: 10px;
+            }
+
+            .rating-item {
+                padding: 4px 10px;
+            }
+
+            .review-card {
+                padding: 12px;
+            }
+
+            .featured-photos img,
+            .photo-gallery img {
+                padding: 5px;
+            }
+            .contact-info {
+                font-size: 0.85em;
+                padding: 4px 12px;
+            }
+            .address, .contact-info {
+                font-size: 0.9em;
+                padding: 4px 12px;
+            }
+        }
+
+        /* Prevent text overflow on very small screens */
+        @media (max-width: 320px) {
+            .top-bar h1 {
+                font-size: 1.8em;
+                padding: 5px 10px;
+            }
+
+            .address {
+                font-size: 0.8em;
+            }
+
+            .reviews-title {
+                font-size: 1.3em;
+            }
+            .contact-info {
+                font-size: 0.8em;
+                padding: 3px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <h1>The Barber Shop</h1>
+        <img src="images/shop.png" alt="Barber Shop Logo">
+        <div class="address">65 Armley Ridge Rd, Armley, Leeds LS12 3LD</div>
+        <div class="contact-info"><span class="opening-hours">Open till 7pm 7 Days A Week</span> - <a href="tel:07951550158" class="phone-number">07951 550158</a></div>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="featured-photos">
+            <img src="images/photo1.jpg" alt="Featured Barber Shop Photo 1">
+            <img src="images/photo2.png" alt="Featured Barber Shop Photo 2">
+        </div>
+
+        <div class="reviews-section">
+            <div class="reviews-header">
+                <h2 class="reviews-title">Reviews</h2>
+                <div class="ratings">
+                    <div class="rating-item">Job: 5★</div>
+                    <div class="rating-item">Price: 5★</div>
+                    <div class="rating-item">Area: 4★</div>
+                    <div class="rating-item">Kids: 2★</div>
+                </div>
+            </div>
+            <div class="reviews-container">
+                <div class="review-card">
+                    <div class="reviewer-name">H P</div>
+                    <div class="reviewer-meta">Local Guide · 93 reviews · 17 photos</div>
+                    <div class="review-content">The best gents haircut in Armley, top marks</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="reviewer-name">joshua burnett</div>
+                    <div class="reviewer-meta">3 reviews</div>
+                    <div class="review-content">I take my 3boys. My 3 year old used to hate getting his hair done but these guys here have done a good job getting him used to getting his hair done. 10 out of 10 every time. Friendly and nice set of guys.</div>
+                    <div class="review-date">3 months ago</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="reviewer-name">Kodey Dooley</div>
+                    <div class="reviewer-meta">1 review</div>
+                    <div class="review-content">My partner had his haircut yesterday very quick and fast service also gave my son a lollipop will definitely be returning</div>
+                    <div class="review-date">2 months ago</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="reviewer-name">edward iziren</div>
+                    <div class="reviewer-meta">Local Guide · 19 reviews · 4 photos</div>
+                    <div class="review-content">Great cut from professionals I was happy with my hair. These guys do all type from African hair to Caucasian....thumbs up...Nigerians should check it out</div>
+                    <div class="review-date">2 months ago</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="reviewer-name">Sat Manku</div>
+                    <div class="reviewer-meta">3 reviews</div>
+                    <div class="review-content">Best Barber Full Stop! Look no further! Friendly and Family environment. Imran is the best Barber with a great team.</div>
+                    <div class="review-date">2 months ago</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="reviewer-name">Kyle Holdsworth</div>
+                    <div class="reviewer-meta">1 review</div>
+                    <div class="review-content">Perfect service been going since I was in high school 16 years ago that is I don't even have to ask what I need I can walk in sit down and they crack on</div>
+                    <div class="review-date">2 months ago</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="photo-gallery">
+            <img src="images/photo3.jpg" alt="Barber Shop Photo 3">
+            <img src="images/photo4.jpg" alt="Barber Shop Photo 4">
+            <img src="images/photo5.jpg" alt="Barber Shop Photo 5">
+            <img src="images/photo6.jpg" alt="Barber Shop Photo 6">
+            <img src="images/photo7.jpg" alt="Barber Shop Photo 7">
+            <img src="images/photo8.jpg" alt="Barber Shop Photo 8">
+            <img src="images/photo9.jpg" alt="Barber Shop Photo 9">
+            <img src="images/photo10.jpg" alt="Barber Shop Photo 10">
+            <img src="images/photo11.jpg" alt="Barber Shop Photo 11">
+            <img src="images/photo12.jpg" alt="Barber Shop Photo 12">
+        </div>
+    </div>
+</body>
+</html> 
