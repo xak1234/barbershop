@@ -252,6 +252,23 @@
             border-color: #333333;
         }
 
+        .photo-gallery img:nth-child(1),
+        .photo-gallery img:nth-child(2),
+        .photo-gallery img:nth-child(3),
+        .photo-gallery img:nth-child(4) {
+            filter: grayscale(100%);
+            transition: filter 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .photo-gallery img:nth-child(1):hover,
+        .photo-gallery img:nth-child(2):hover,
+        .photo-gallery img:nth-child(3):hover,
+        .photo-gallery img:nth-child(4):hover {
+            filter: grayscale(0%);
+            transform: scale(1.02);
+            border-color: #333333;
+        }
+
         .qr-section {
             display: flex;
             flex-direction: column;
