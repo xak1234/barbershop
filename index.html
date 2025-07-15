@@ -83,30 +83,31 @@
             font-size: 1em;
             margin-top: 5px;
             text-align: center;
-            padding: 4px 15px;
+            padding: 8px 15px;
             background: rgba(255, 255, 255, 0.6);
             border-radius: 4px;
             font-weight: 700;
             z-index: 2;
             letter-spacing: 0.5px;
             text-shadow: 0.5px 0.5px 0px rgba(255, 255, 255, 0.8);
+            width: 90%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            word-wrap: break-word;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            align-items: center;
         }
 
         .opening-hours {
             font-weight: 800;
             color: #222;
-        }
-
-        .contact-info {
-            color: #333;
-            font-size: 0.9em;
-            margin-top: 5px;
-            text-align: center;
-            padding: 4px 15px;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 4px;
-            font-weight: 500;
-            z-index: 2;
+            display: block;
         }
 
         .phone-number {
@@ -299,7 +300,8 @@
 
             .address, .contact-info {
                 font-size: 0.95em;
-                padding: 5px 15px;
+                padding: 6px 12px;
+                width: 85%;
             }
         }
 
@@ -344,11 +346,13 @@
             }
             .contact-info {
                 font-size: 0.85em;
-                padding: 4px 12px;
+                padding: 4px 10px;
+                gap: 3px;
             }
             .address, .contact-info {
                 font-size: 0.9em;
-                padding: 4px 12px;
+                padding: 5px 10px;
+                width: 90%;
             }
         }
 
@@ -376,15 +380,18 @@
 <body>
     <div class="top-bar">
         <h1>The Barber Shop</h1>
-        <img src="images/shop.png" alt="Barber Shop Logo">
-        <div class="address">65 Armley Ridge Rd, Armley, Leeds LS12 3LD</div>
-        <div class="contact-info"><span class="opening-hours">Open till 7pm 7 Days A Week</span> - <a href="tel:07951550158" class="phone-number">07951 550158</a></div>
+        <img src="https://raw.githubusercontent.com/thebarbershop65/thebarbershop/main/images/shop.png" alt="Barber Shop Logo">
+        <div class="address">65 Armley Ridge Rd, Armley,<br>Leeds LS12 3LD</div>
+        <div class="contact-info">
+            <span class="opening-hours">Open till 7pm 7 Days A Week</span>
+            <span class="phone-number">07951 550158</span>
+        </div>
     </div>
 
     <div class="content-wrapper">
         <div class="featured-photos">
-            <img src="images/photo1.jpg" alt="Featured Barber Shop Photo 1">
-            <img src="images/photo2.png" alt="Featured Barber Shop Photo 2">
+            <img src="https://raw.githubusercontent.com/thebarbershop65/thebarbershop/main/images/photo1.jpg" alt="Featured Barber Shop Photo 1">
+            <img src="https://raw.githubusercontent.com/thebarbershop65/thebarbershop/main/images/photo2.png" alt="Featured Barber Shop Photo 2">
         </div>
 
         <div class="reviews-section">
@@ -442,16 +449,16 @@
         </div>
 
         <div class="photo-gallery">
-            <img src="images/photo3.jpg" alt="Barber Shop Photo 3">
-            <img src="images/photo4.jpg" alt="Barber Shop Photo 4">
-            <img src="images/photo5.jpg" alt="Barber Shop Photo 5">
-            <img src="images/photo6.jpg" alt="Barber Shop Photo 6">
-            <img src="images/photo7.jpg" alt="Barber Shop Photo 7">
-            <img src="images/photo8.jpg" alt="Barber Shop Photo 8">
-            <img src="images/photo9.jpg" alt="Barber Shop Photo 9">
-            <img src="images/photo10.jpg" alt="Barber Shop Photo 10">
-            <img src="images/photo11.jpg" alt="Barber Shop Photo 11">
-            <img src="images/photo12.jpg" alt="Barber Shop Photo 12">
+            <img src="https://raw.githubusercontent.com/thebarbershop65/thebarbershop/main/images/photo3.jpg" alt="Barber Shop Photo 3">
+            <img src="https://raw.githubusercontent.com/thebarbershop65/thebarbershop/main/images/photo4.jpg" alt="Barber Shop Photo 4">
+            <img src="https://raw.githubusercontent.com/thebarbershop65/thebarbershop/main/images/photo5.jpg" alt="Barber Shop Photo 5">
+            <img src="https://raw.githubusercontent.com/thebarbershop65/thebarbershop/main/images/photo6.jpg" alt="Barber Shop Photo 6">
+            <img src="https://raw.githubusercontent.com/thebarbershop65/thebarbershop/main/images/photo7.jpg" alt="Barber Shop Photo 7">
+            <img src="https://raw.githubusercontent.com/thebarbershop65/thebarbershop/main/images/photo8.jpg" alt="Barber Shop Photo 8">
+            <img src="https://raw.githubusercontent.com/thebarbershop65/thebarbershop/main/images/photo9.jpg" alt="Barber Shop Photo 9">
+            <img src="https://raw.githubusercontent.com/thebarbershop65/thebarbershop/main/images/photo10.jpg" alt="Barber Shop Photo 10">
+            <img src="https://raw.githubusercontent.com/thebarbershop65/thebarbershop/main/images/photo11.jpg" alt="Barber Shop Photo 11">
+            <img src="https://raw.githubusercontent.com/thebarbershop65/thebarbershop/main/images/photo12.jpg" alt="Barber Shop Photo 12">
         </div>
     </div>
 </body>
