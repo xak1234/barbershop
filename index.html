@@ -252,6 +252,50 @@
             border-color: #333333;
         }
 
+        .qr-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+            padding: 20px;
+            margin-bottom: 30px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .qr-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            border: 2px solid #000;
+            border-radius: 8px;
+            background: white;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .qr-description {
+            font-size: 0.9em;
+            color: #666;
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
         /* Mobile Styles */
         @media (max-width: 768px) {
             body {
@@ -354,6 +398,19 @@
                 padding: 5px 10px;
                 width: 90%;
             }
+            .qr-section {
+                padding: 15px;
+                max-width: 300px;
+            }
+            
+            .qr-code {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .qr-title {
+                font-size: 1.3em;
+            }
         }
 
         /* Prevent text overflow on very small screens */
@@ -392,6 +449,10 @@
         <div class="featured-photos">
             <img src="https://raw.githubusercontent.com/thebarbershop65/thebarbershop/main/images/photo1.jpg" alt="Featured Barber Shop Photo 1">
             <img src="https://raw.githubusercontent.com/thebarbershop65/thebarbershop/main/images/photo2.png" alt="Featured Barber Shop Photo 2">
+        </div>
+
+        <div class="qr-section">
+            <img src="https://raw.githubusercontent.com/thebarbershop65/thebarbershop/main/images/qr.png" alt="QR Code" class="qr-code">
         </div>
 
         <div class="reviews-section">
