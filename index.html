@@ -330,24 +330,16 @@
             padding: 15px;
             font-size: 16px;
             min-height: 50px;
-            color: transparent;
+            color: #333;
             position: relative;
+            text-align: center;
         }
 
         .booking-form input[type="date"]::-webkit-calendar-picker-indicator {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: 30px;
-            height: 30px;
             cursor: pointer;
             opacity: 1;
-        }
-
-        .booking-form input[type="date"]:focus,
-        .booking-form input[type="date"]:valid {
-            color: #333;
+            width: 20px;
+            height: 20px;
         }
 
         .booking-form button {
@@ -649,6 +641,16 @@
             position: relative;
         }
 
+        .booking-form .time-field {
+            display: none;
+        }
+
+        .booking-form .time-field.show {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
         .booking-form button.submit-btn {
             margin-top: 10px;
         }
@@ -678,8 +680,9 @@
                 <label for="date">Date</label>
                 <input type="date" id="date" name="date" required>
 
-                <label for="time">Time</label>
-                <select id="time" name="time" required>
+                <div class="time-field" id="time-field">
+                    <label for="time">Time</label>
+                    <select id="time" name="time" required>
                     <option value="09:00">09:00</option>
                     <option value="10:00">10:00</option>
                     <option value="11:00">11:00</option>
@@ -691,6 +694,7 @@
                     <option value="17:00">17:00</option>
                     <option value="18:00">18:00</option>
                 </select>
+                </div>
                 <button type="submit" class="submit-btn">Submit Booking</button>
             </div>
         </form>
@@ -878,6 +882,7 @@
         document.getElementById('close-form-btn').addEventListener('click', function() {
             document.getElementById('form-fields').classList.remove('show');
             document.getElementById('show-form-btn').style.display = 'block';
+            document.getElementById('time-field').classList.remove('show');
         });
 
         function addOneHour(t) {
@@ -930,23 +935,22 @@
 
         async function updateAvailableTimes() {
             const selectedDate = dateInput.value;
+            const timeField = document.getElementById('time-field');
+            
+            if (!selectedDate) {
+                // If no date selected, hide time field
+                timeField.classList.remove('show');
+                timeSelect.innerHTML = '<option value="">Select a time</option>';
+                timeSelect.disabled = false;
+                return;
+            }
+            
+            // Show time field since date is selected
+            timeField.classList.add('show');
             
             // Show loading state
             timeSelect.innerHTML = '<option value="">Loading available times...</option>';
             timeSelect.disabled = true;
-            
-            if (!selectedDate) {
-                // If no date selected, show all times
-                timeSelect.innerHTML = '<option value="">Select a time</option>';
-                allTimes.forEach(time => {
-                    const option = document.createElement('option');
-                    option.value = time;
-                    option.textContent = time;
-                    timeSelect.appendChild(option);
-                });
-                timeSelect.disabled = false;
-                return;
-            }
             
             try {
                 // Get booked times for selected date
@@ -1082,6 +1086,7 @@
                 form.reset();
                 document.getElementById('form-fields').classList.remove('show');
                 document.getElementById('show-form-btn').style.display = 'block';
+                document.getElementById('time-field').classList.remove('show');
                 
                 // Refresh the time slots to show the new booking is taken
                 await updateAvailableTimes();
