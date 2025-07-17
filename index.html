@@ -317,13 +317,36 @@
             border-radius: 4px;
         }
 
-        .booking-form button {
-            background: #cc0000;
-            color: #fff;
-            border: none;
-            padding: 10px;
-            border-radius: 4px;
-            cursor: pointer;
+    .booking-form button {
+        background: #cc0000;
+        color: #fff;
+        border: none;
+        padding: 10px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        .existing-bookings {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+            padding: 20px;
+            margin-bottom: 30px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .existing-bookings ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .existing-bookings li {
+            padding: 4px 0;
         }
 
         .qr-title {
@@ -585,6 +608,11 @@
             </form>
         </div>
 
+        <div class="existing-bookings">
+            <h2>Availability</h2>
+            <ul id="bookings-list"></ul>
+        </div>
+
         <div class="reviews-section">
             <div class="reviews-header">
                 <h2 class="reviews-title">Reviews</h2>
@@ -655,7 +683,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyBXXAPa8TujBvaOjyGawO8aQCNkuhPo0YI",
@@ -670,6 +698,40 @@
         const db = getFirestore(app);
 
         const form = document.getElementById('booking-form');
+        const dateInput = document.getElementById('date');
+        const bookingsList = document.getElementById('bookings-list');
+
+        async function showBookingsForDate(dateStr) {
+            bookingsList.innerHTML = 'Loading...';
+            const start = dateStr + 'T00:00';
+            const end = dateStr + 'T23:59';
+            const q = query(collection(db, 'bookings'), where('date', '>=', start), where('date', '<=', end));
+            const snap = await getDocs(q);
+            const booked = [];
+            snap.forEach(doc => booked.push(doc.data().date.slice(11,16)));
+            bookingsList.innerHTML = '';
+            for(let h=9; h<=19; h++) {
+                for(let m=0; m<60; m+=30) {
+                    const t = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
+                    const li = document.createElement('li');
+                    if(booked.includes(t)) {
+                        li.textContent = t + ' - Booked';
+                        li.style.color = 'red';
+                    } else {
+                        li.textContent = t + ' - Available';
+                        li.style.color = 'green';
+                    }
+                    bookingsList.appendChild(li);
+                }
+            }
+        }
+
+        dateInput.addEventListener('change', () => {
+            const day = dateInput.value.split('T')[0];
+            if(day) showBookingsForDate(day);
+        });
+
+        showBookingsForDate(new Date().toISOString().split('T')[0]);
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const data = {
@@ -682,6 +744,7 @@
                 await addDoc(collection(db, 'bookings'), data);
                 alert('Booking saved!');
                 form.reset();
+                showBookingsForDate(data.date.split('T')[0]);
             } catch (err) {
                 console.error(err);
                 alert('Failed to save booking');
