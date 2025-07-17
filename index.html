@@ -326,6 +326,10 @@
             cursor: pointer;
         }
 
+        .booking-form button.submit-btn {
+            margin-top: 10px;
+        }
+
         .qr-title {
             font-size: 1.5em;
             font-weight: 700;
@@ -550,7 +554,7 @@
             }
         }
 
-        .my-bookings, #admin-panel {
+        #admin-panel {
             background: white;
             border-radius: 8px;
             box-shadow: 0 6px 16px rgba(0,0,0,0.25);
@@ -569,6 +573,21 @@
             padding: 4px;
             font-size: 0.9em;
         }
+
+        .booking-form .form-fields {
+            display: none;
+        }
+
+        .booking-form .form-fields.show {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .booking-form button.submit-btn {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -583,40 +602,32 @@
     </div>
 
     <div class="booking-form">
-        <h2>Book an Appointment</h2>
+        <button type="button" id="show-form-btn">Make a Booking</button>
         <form id="booking-form">
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" required>
-            <label for="phone">Phone</label>
-            <input type="tel" id="phone" name="phone" required>
-            <label for="date">Date</label>
-            <input type="date" id="date" name="date" required>
+            <div class="form-fields" id="form-fields">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" name="phone" required>
+                <label for="date">Date</label>
+                <input type="date" id="date" name="date" required>
 
-            <label for="time">Time</label>
-            <select id="time" name="time" required>
-                <option value="09:00">09:00</option>
-                <option value="10:00">10:00</option>
-                <option value="11:00">11:00</option>
-                <option value="12:00">12:00</option>
-                <option value="13:00">13:00</option>
-                <option value="14:00">14:00</option>
-                <option value="15:00">15:00</option>
-                <option value="16:00">16:00</option>
-                <option value="17:00">17:00</option>
-                <option value="18:00">18:00</option>
-            </select>
-            <button type="submit">Book Now</button>
+                <label for="time">Time</label>
+                <select id="time" name="time" required>
+                    <option value="09:00">09:00</option>
+                    <option value="10:00">10:00</option>
+                    <option value="11:00">11:00</option>
+                    <option value="12:00">12:00</option>
+                    <option value="13:00">13:00</option>
+                    <option value="14:00">14:00</option>
+                    <option value="15:00">15:00</option>
+                    <option value="16:00">16:00</option>
+                    <option value="17:00">17:00</option>
+                    <option value="18:00">18:00</option>
+                </select>
+                <button type="submit" class="submit-btn">Submit Booking</button>
+            </div>
         </form>
-    </div>
-
-    <div class="my-bookings">
-        <h2>My Bookings</h2>
-        <form id="lookup-form">
-            <label for="lookup-phone">Phone</label>
-            <input type="tel" id="lookup-phone" required>
-            <button type="submit">Lookup</button>
-        </form>
-        <ul id="my-bookings-list"></ul>
     </div>
 
     <div id="admin-panel" style="display:none;">
@@ -727,6 +738,26 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // Test Firebase connection on page load
+        async function testFirebaseConnection() {
+            try {
+                await getDocs(query(collection(db, 'bookings'), where('date', '==', 'test')));
+                console.log('Firebase connection: OK');
+            } catch (error) {
+                console.error('Firebase connection test failed:', error);
+                if (error.code === 'permission-denied') {
+                    console.warn('Database security rules may require authentication');
+                } else if (error.code === 'unavailable') {
+                    console.warn('Firebase service temporarily unavailable');
+                } else {
+                    console.warn('Unknown Firebase error - check project configuration');
+                }
+            }
+        }
+        
+        // Test connection when page loads
+        testFirebaseConnection();
+
         const ADMIN_PIN = '1234';
 
         const phoneEl = document.querySelector('.phone-number');
@@ -746,6 +777,12 @@
             }
         });
 
+        // Add this new code for showing the form
+        document.getElementById('show-form-btn').addEventListener('click', function() {
+            document.getElementById('form-fields').classList.add('show');
+            this.style.display = 'none';
+        });
+
         function addOneHour(t) {
             const [h, m] = t.split(':').map(Number);
             return String(h + 1).padStart(2, '0') + ':' + String(m).padStart(2, '0');
@@ -753,19 +790,108 @@
 
         const dateInput = document.getElementById('date');
         const timeSelect = document.getElementById('time');
+        
+        // Store all available times
+        const allTimes = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
 
         dateInput.addEventListener('change', updateAvailableTimes);
+        
+        // Refresh availability every 30 seconds when a date is selected
+        // This helps when multiple people are booking simultaneously
+        let refreshInterval;
+        function startAvailabilityRefresh() {
+            if (refreshInterval) clearInterval(refreshInterval);
+            if (dateInput.value) {
+                refreshInterval = setInterval(() => {
+                    if (dateInput.value && document.visibilityState === 'visible') {
+                        updateAvailableTimes();
+                    }
+                }, 30000); // Refresh every 30 seconds
+            }
+        }
+        
+        function stopAvailabilityRefresh() {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+                refreshInterval = null;
+            }
+        }
+        
+        // Start refresh when date selected, stop when page hidden
+        dateInput.addEventListener('change', startAvailabilityRefresh);
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                stopAvailabilityRefresh();
+            } else if (dateInput.value) {
+                startAvailabilityRefresh();
+            }
+        });
 
         async function updateAvailableTimes() {
             const selectedDate = dateInput.value;
-            timeSelect.querySelectorAll('option').forEach(o => o.disabled = false);
-            if (!selectedDate) return;
-            const snap = await getDocs(query(collection(db, 'bookings'), where('date', '==', selectedDate)));
-            snap.forEach(s => {
-                const d = s.data();
-                const opt = timeSelect.querySelector(`option[value="${d.startTime}"]`);
-                if (opt) opt.disabled = true;
-            });
+            
+            // Show loading state
+            timeSelect.innerHTML = '<option value="">Loading available times...</option>';
+            timeSelect.disabled = true;
+            
+            if (!selectedDate) {
+                // If no date selected, show all times
+                timeSelect.innerHTML = '<option value="">Select a time</option>';
+                allTimes.forEach(time => {
+                    const option = document.createElement('option');
+                    option.value = time;
+                    option.textContent = time;
+                    timeSelect.appendChild(option);
+                });
+                timeSelect.disabled = false;
+                return;
+            }
+            
+            try {
+                // Get booked times for selected date
+                const snap = await getDocs(query(collection(db, 'bookings'), where('date', '==', selectedDate)));
+                const bookedTimes = [];
+                snap.forEach(s => {
+                    const d = s.data();
+                    bookedTimes.push(d.startTime);
+                });
+                
+                // Clear loading and set default option
+                timeSelect.innerHTML = '<option value="">Select a time</option>';
+                
+                // Add only available times to dropdown
+                allTimes.forEach(time => {
+                    if (!bookedTimes.includes(time)) {
+                        const option = document.createElement('option');
+                        option.value = time;
+                        option.textContent = time;
+                        timeSelect.appendChild(option);
+                    }
+                });
+                
+                // If no times available, show message
+                if (timeSelect.children.length === 1) {
+                    const option = document.createElement('option');
+                    option.value = '';
+                    option.textContent = 'No times available for this date';
+                    option.disabled = true;
+                    timeSelect.appendChild(option);
+                }
+                
+                timeSelect.disabled = false;
+                
+            } catch (error) {
+                console.error('Firebase connection error:', error);
+                // Show all times if Firebase is down
+                timeSelect.innerHTML = '<option value="">Select a time</option>';
+                allTimes.forEach(time => {
+                    const option = document.createElement('option');
+                    option.value = time;
+                    option.textContent = time + ' (availability unknown)';
+                    timeSelect.appendChild(option);
+                });
+                timeSelect.disabled = false;
+            }
         }
 
         const form = document.getElementById('booking-form');
@@ -773,66 +899,107 @@
             e.preventDefault();
             const date = form.date.value;
             const time = form.time.value;
+            const name = form.name.value.trim();
+            const phone = form.phone.value.trim();
 
-            const clash = await getDocs(query(collection(db, 'bookings'), where('date', '==', date), where('startTime', '==', time)));
-            if (!clash.empty) {
-                alert('This slot is already booked');
+            // Validate form data
+            if (!name) {
+                alert('Please enter your name');
+                return;
+            }
+            if (!phone) {
+                alert('Please enter your phone number');
+                return;
+            }
+            if (!date) {
+                alert('Please select a date');
+                return;
+            }
+            if (!time) {
+                alert('Please select an available time');
                 return;
             }
 
-            const data = {
-                name: form.name.value,
-                phone: form.phone.value,
-                date,
-                startTime: time,
-                endTime: addOneHour(time),
-                createdAt: Date.now()
-            };
             try {
-                await addDoc(collection(db, 'bookings'), data);
-                alert('Booking saved!');
-                form.reset();
-                updateAvailableTimes();
-            } catch (err) {
-                console.error(err);
-                alert('Failed to save booking');
-            }
-        });
+                // Double-check for conflicts right before booking
+                const conflictCheck = await getDocs(query(
+                    collection(db, 'bookings'), 
+                    where('date', '==', date), 
+                    where('startTime', '==', time)
+                ));
+                
+                if (!conflictCheck.empty) {
+                    alert('Sorry, this time slot was just booked by someone else. Please select another time.');
+                    // Refresh available times
+                    await updateAvailableTimes();
+                    return;
+                }
 
-        const lookupForm = document.getElementById('lookup-form');
-        const myList = document.getElementById('my-bookings-list');
-        lookupForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const phone = document.getElementById('lookup-phone').value;
-            const snap = await getDocs(query(collection(db, 'bookings'), where('phone', '==', phone)));
-            myList.innerHTML = '';
-            snap.forEach(s => {
-                const d = s.data();
-                const li = document.createElement('li');
-                li.textContent = `${d.date} ${d.startTime}`;
-                myList.appendChild(li);
-            });
-            if (!myList.children.length) {
-                myList.innerHTML = '<li>No bookings found</li>';
+                const data = {
+                    name: name,
+                    phone: phone,
+                    date: date,
+                    startTime: time,
+                    endTime: addOneHour(time),
+                    createdAt: Date.now()
+                };
+                
+                // Attempt to save the booking
+                await addDoc(collection(db, 'bookings'), data);
+                
+                alert('Booked !');
+                
+                // Reset form and hide it properly
+                form.reset();
+                document.getElementById('form-fields').classList.remove('show');
+                document.getElementById('show-form-btn').style.display = 'block';
+                
+                // Refresh the time slots to show the new booking is taken
+                await updateAvailableTimes();
+                
+            } catch (err) {
+                console.error('Firebase error:', err);
+                if (err.code === 'permission-denied') {
+                    alert('Database access denied. Please contact the administrator.');
+                } else if (err.code === 'unavailable') {
+                    alert('Database temporarily unavailable. Please try again later.');
+                } else if (err.code === 'already-exists') {
+                    alert('This time slot is already booked. Please select another time.');
+                    await updateAvailableTimes();
+                } else {
+                    alert('Failed to save booking. Please try again or call us directly.');
+                }
             }
         });
 
         async function loadAdminBookings() {
             const table = document.getElementById('admin-bookings');
             table.innerHTML = '<tr><th>Date</th><th>Time</th><th>Name</th><th>Phone</th><th></th></tr>';
-            const snap = await getDocs(collection(db, 'bookings'));
-            snap.forEach(s => {
-                const d = s.data();
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${d.date}</td><td>${d.startTime}</td><td>${d.name}</td><td>${d.phone}</td><td><button data-id="${s.id}">Delete</button></td>`;
-                table.appendChild(tr);
-            });
-            table.querySelectorAll('button').forEach(btn => {
-                btn.addEventListener('click', async () => {
-                    await deleteDoc(doc(db, 'bookings', btn.dataset.id));
-                    loadAdminBookings();
+            try {
+                const snap = await getDocs(collection(db, 'bookings'));
+                snap.forEach(s => {
+                    const d = s.data();
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td>${d.date}</td><td>${d.startTime}</td><td>${d.name}</td><td>${d.phone}</td><td><button data-id="${s.id}">Delete</button></td>`;
+                    table.appendChild(tr);
                 });
-            });
+                table.querySelectorAll('button').forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        try {
+                            await deleteDoc(doc(db, 'bookings', btn.dataset.id));
+                            loadAdminBookings();
+                        } catch (error) {
+                            console.error('Delete error:', error);
+                            alert('Failed to delete booking');
+                        }
+                    });
+                });
+            } catch (error) {
+                console.error('Load bookings error:', error);
+                const tr = document.createElement('tr');
+                tr.innerHTML = '<td colspan="5">Unable to load bookings - Database connection error</td>';
+                table.appendChild(tr);
+            }
         }
     </script>
 </body>
