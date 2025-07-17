@@ -549,6 +549,26 @@
                 aspect-ratio: 1/1;
             }
         }
+
+        .my-bookings, #admin-panel {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+            padding: 20px;
+            margin: 0 auto 30px auto;
+            max-width: 400px;
+        }
+
+        #admin-panel table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #admin-panel th, #admin-panel td {
+            border: 1px solid #ccc;
+            padding: 4px;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
@@ -579,10 +599,39 @@
                 <input type="text" id="name" name="name" required>
                 <label for="phone">Phone</label>
                 <input type="tel" id="phone" name="phone" required>
-                <label for="date">Desired Time</label>
-                <input type="datetime-local" id="date" name="date" required>
+                <label for="date">Date</label>
+                <input type="date" id="date" name="date" required>
+
+                <label for="time">Time</label>
+                <select id="time" name="time" required>
+                    <option value="09:00">09:00</option>
+                    <option value="10:00">10:00</option>
+                    <option value="11:00">11:00</option>
+                    <option value="12:00">12:00</option>
+                    <option value="13:00">13:00</option>
+                    <option value="14:00">14:00</option>
+                    <option value="15:00">15:00</option>
+                    <option value="16:00">16:00</option>
+                    <option value="17:00">17:00</option>
+                    <option value="18:00">18:00</option>
+                </select>
                 <button type="submit">Book Now</button>
             </form>
+        </div>
+
+        <div class="my-bookings">
+            <h2>My Bookings</h2>
+            <form id="lookup-form">
+                <label for="lookup-phone">Phone</label>
+                <input type="tel" id="lookup-phone" required>
+                <button type="submit">Lookup</button>
+            </form>
+            <ul id="my-bookings-list"></ul>
+        </div>
+
+        <div id="admin-panel" style="display:none;">
+            <h2>All Bookings (Admin)</h2>
+            <table id="admin-bookings"></table>
         </div>
 
         <div class="reviews-section">
@@ -655,7 +704,16 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import {
+            getFirestore,
+            collection,
+            addDoc,
+            getDocs,
+            deleteDoc,
+            doc,
+            query,
+            where
+        } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyBXXAPa8TujBvaOjyGawO8aQCNkuhPo0YI",
@@ -669,24 +727,113 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        const ADMIN_PIN = '1234';
+
+        const phoneEl = document.querySelector('.phone-number');
+        let tapCount = 0;
+        let tapTimer;
+        phoneEl.addEventListener('click', () => {
+            tapCount++;
+            clearTimeout(tapTimer);
+            tapTimer = setTimeout(() => tapCount = 0, 1000);
+            if (tapCount === 10) {
+                tapCount = 0;
+                const pin = prompt('Admin PIN');
+                if (pin === ADMIN_PIN) {
+                    document.getElementById('admin-panel').style.display = 'block';
+                    loadAdminBookings();
+                }
+            }
+        });
+
+        function addOneHour(t) {
+            const [h, m] = t.split(':').map(Number);
+            return String(h + 1).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+        }
+
+        const dateInput = document.getElementById('date');
+        const timeSelect = document.getElementById('time');
+
+        dateInput.addEventListener('change', updateAvailableTimes);
+
+        async function updateAvailableTimes() {
+            const selectedDate = dateInput.value;
+            timeSelect.querySelectorAll('option').forEach(o => o.disabled = false);
+            if (!selectedDate) return;
+            const snap = await getDocs(query(collection(db, 'bookings'), where('date', '==', selectedDate)));
+            snap.forEach(s => {
+                const d = s.data();
+                const opt = timeSelect.querySelector(`option[value="${d.startTime}"]`);
+                if (opt) opt.disabled = true;
+            });
+        }
+
         const form = document.getElementById('booking-form');
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const date = form.date.value;
+            const time = form.time.value;
+
+            const clash = await getDocs(query(collection(db, 'bookings'), where('date', '==', date), where('startTime', '==', time)));
+            if (!clash.empty) {
+                alert('This slot is already booked');
+                return;
+            }
+
             const data = {
                 name: form.name.value,
                 phone: form.phone.value,
-                date: form.date.value,
-                created: Date.now()
+                date,
+                startTime: time,
+                endTime: addOneHour(time),
+                createdAt: Date.now()
             };
             try {
                 await addDoc(collection(db, 'bookings'), data);
                 alert('Booking saved!');
                 form.reset();
+                updateAvailableTimes();
             } catch (err) {
                 console.error(err);
                 alert('Failed to save booking');
             }
         });
+
+        const lookupForm = document.getElementById('lookup-form');
+        const myList = document.getElementById('my-bookings-list');
+        lookupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const phone = document.getElementById('lookup-phone').value;
+            const snap = await getDocs(query(collection(db, 'bookings'), where('phone', '==', phone)));
+            myList.innerHTML = '';
+            snap.forEach(s => {
+                const d = s.data();
+                const li = document.createElement('li');
+                li.textContent = `${d.date} ${d.startTime}`;
+                myList.appendChild(li);
+            });
+            if (!myList.children.length) {
+                myList.innerHTML = '<li>No bookings found</li>';
+            }
+        });
+
+        async function loadAdminBookings() {
+            const table = document.getElementById('admin-bookings');
+            table.innerHTML = '<tr><th>Date</th><th>Time</th><th>Name</th><th>Phone</th><th></th></tr>';
+            const snap = await getDocs(collection(db, 'bookings'));
+            snap.forEach(s => {
+                const d = s.data();
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${d.date}</td><td>${d.startTime}</td><td>${d.name}</td><td>${d.phone}</td><td><button data-id="${s.id}">Delete</button></td>`;
+                table.appendChild(tr);
+            });
+            table.querySelectorAll('button').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    await deleteDoc(doc(db, 'bookings', btn.dataset.id));
+                    loadAdminBookings();
+                });
+            });
+        }
     </script>
 </body>
 </html>
