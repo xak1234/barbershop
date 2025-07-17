@@ -285,6 +285,47 @@
             z-index: 1;
         }
 
+        .booking-form {
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+            padding: 20px;
+            margin-bottom: 30px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 1;
+            gap: 10px;
+        }
+
+        .booking-form h2 {
+            margin: 0 0 10px;
+            text-align: center;
+            color: #333;
+        }
+
+        .booking-form label {
+            font-weight: 600;
+        }
+
+        .booking-form input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .booking-form button {
+            background: #cc0000;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
         .qr-title {
             font-size: 1.5em;
             font-weight: 700;
@@ -531,6 +572,19 @@
             <img src="https://raw.githubusercontent.com/thebarbershop65/thebarbershop/main/images/qr.png" alt="QR Code" class="qr-code">
         </div>
 
+        <div class="booking-form">
+            <h2>Book an Appointment</h2>
+            <form id="booking-form">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" name="phone" required>
+                <label for="date">Desired Time</label>
+                <input type="datetime-local" id="date" name="date" required>
+                <button type="submit">Book Now</button>
+            </form>
+        </div>
+
         <div class="reviews-section">
             <div class="reviews-header">
                 <h2 class="reviews-title">Reviews</h2>
@@ -598,5 +652,41 @@
             <img src="https://raw.githubusercontent.com/thebarbershop65/thebarbershop/main/images/photo12.jpg" alt="Barber Shop Photo 12">
         </div>
     </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyBXXAPa8TujBvaOjyGawO8aQCNkuhPo0YI",
+          authDomain: "barbers-2759a.firebaseapp.com",
+          projectId: "barbers-2759a",
+          storageBucket: "barbers-2759a.firebasestorage.app",
+          messagingSenderId: "1009127595018",
+          appId: "1:1009127595018:web:7b090f514a9dd2edb3d3f3"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const form = document.getElementById('booking-form');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                name: form.name.value,
+                phone: form.phone.value,
+                date: form.date.value,
+                created: Date.now()
+            };
+            try {
+                await addDoc(collection(db, 'bookings'), data);
+                alert('Booking saved!');
+                form.reset();
+            } catch (err) {
+                console.error(err);
+                alert('Failed to save booking');
+            }
+        });
+    </script>
 </body>
-</html> 
+</html>
