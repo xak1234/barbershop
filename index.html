@@ -582,6 +582,48 @@
         </div>
     </div>
 
+    <div class="booking-form">
+        <h2>Book an Appointment</h2>
+        <form id="booking-form">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="phone" required>
+            <label for="date">Date</label>
+            <input type="date" id="date" name="date" required>
+
+            <label for="time">Time</label>
+            <select id="time" name="time" required>
+                <option value="09:00">09:00</option>
+                <option value="10:00">10:00</option>
+                <option value="11:00">11:00</option>
+                <option value="12:00">12:00</option>
+                <option value="13:00">13:00</option>
+                <option value="14:00">14:00</option>
+                <option value="15:00">15:00</option>
+                <option value="16:00">16:00</option>
+                <option value="17:00">17:00</option>
+                <option value="18:00">18:00</option>
+            </select>
+            <button type="submit">Book Now</button>
+        </form>
+    </div>
+
+    <div class="my-bookings">
+        <h2>My Bookings</h2>
+        <form id="lookup-form">
+            <label for="lookup-phone">Phone</label>
+            <input type="tel" id="lookup-phone" required>
+            <button type="submit">Lookup</button>
+        </form>
+        <ul id="my-bookings-list"></ul>
+    </div>
+
+    <div id="admin-panel" style="display:none;">
+        <h2>All Bookings (Admin)</h2>
+        <table id="admin-bookings"></table>
+    </div>
+
     <div class="content-wrapper">
         <div class="featured-photos">
             <img src="https://raw.githubusercontent.com/thebarbershop65/thebarbershop/main/images/photo1.jpg" alt="Featured Barber Shop Photo 1">
@@ -590,48 +632,6 @@
 
         <div class="qr-section">
             <img src="https://raw.githubusercontent.com/thebarbershop65/thebarbershop/main/images/qr.png" alt="QR Code" class="qr-code">
-        </div>
-
-        <div class="booking-form">
-            <h2>Book an Appointment</h2>
-            <form id="booking-form">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" required>
-                <label for="phone">Phone</label>
-                <input type="tel" id="phone" name="phone" required>
-                <label for="date">Date</label>
-                <input type="date" id="date" name="date" required>
-
-                <label for="time">Time</label>
-                <select id="time" name="time" required>
-                    <option value="09:00">09:00</option>
-                    <option value="10:00">10:00</option>
-                    <option value="11:00">11:00</option>
-                    <option value="12:00">12:00</option>
-                    <option value="13:00">13:00</option>
-                    <option value="14:00">14:00</option>
-                    <option value="15:00">15:00</option>
-                    <option value="16:00">16:00</option>
-                    <option value="17:00">17:00</option>
-                    <option value="18:00">18:00</option>
-                </select>
-                <button type="submit">Book Now</button>
-            </form>
-        </div>
-
-        <div class="my-bookings">
-            <h2>My Bookings</h2>
-            <form id="lookup-form">
-                <label for="lookup-phone">Phone</label>
-                <input type="tel" id="lookup-phone" required>
-                <button type="submit">Lookup</button>
-            </form>
-            <ul id="my-bookings-list"></ul>
-        </div>
-
-        <div id="admin-panel" style="display:none;">
-            <h2>All Bookings (Admin)</h2>
-            <table id="admin-bookings"></table>
         </div>
 
         <div class="reviews-section">
