@@ -317,17 +317,6 @@
             border-radius: 4px;
         }
 
-        .booking-form select {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .available-slots {
-            font-size: 0.9em;
-            color: #333;
-        }
-
         .booking-form button {
             background: #cc0000;
             color: #fff;
@@ -590,11 +579,8 @@
                 <input type="text" id="name" name="name" required>
                 <label for="phone">Phone</label>
                 <input type="tel" id="phone" name="phone" required>
-                <label for="date">Date</label>
-                <input type="date" id="date" name="date" required>
-                <label for="time">Time</label>
-                <select id="time" name="time"></select>
-                <div id="available-slots" class="available-slots"></div>
+                <label for="date">Desired Time</label>
+                <input type="datetime-local" id="date" name="date" required>
                 <button type="submit">Book Now</button>
             </form>
         </div>
@@ -669,7 +655,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyBXXAPa8TujBvaOjyGawO8aQCNkuhPo0YI",
@@ -684,63 +670,18 @@
         const db = getFirestore(app);
 
         const form = document.getElementById('booking-form');
-        const dateInput = document.getElementById('date');
-        const timeSelect = document.getElementById('time');
-        const availableDiv = document.getElementById('available-slots');
-
-        const TIME_SLOTS = [9,10,11,12,13,14,15,16,17,18,19];
-
-        dateInput.addEventListener('change', updateTimes);
-
-        async function updateTimes() {
-            const selectedDate = dateInput.value;
-            timeSelect.innerHTML = '';
-            availableDiv.textContent = '';
-            if (!selectedDate) return;
-            const snapshot = await getDocs(collection(db, 'bookings'));
-            const booked = [];
-            snapshot.forEach(doc => {
-                const d = doc.data().date;
-                if (d && d.startsWith(selectedDate)) {
-                    booked.push(d.substring(11,16));
-                }
-            });
-            const available = [];
-            TIME_SLOTS.forEach(h => {
-                const t = String(h).padStart(2,'0')+':00';
-                const opt = document.createElement('option');
-                opt.value = t;
-                if (booked.includes(t)) {
-                    opt.disabled = true;
-                    opt.textContent = t + ' (Booked)';
-                } else {
-                    opt.textContent = t;
-                    available.push(t);
-                }
-                timeSelect.appendChild(opt);
-            });
-            if (available.length) {
-                availableDiv.textContent = 'Available slots: ' + available.join(', ');
-            } else {
-                availableDiv.textContent = 'No slots available.';
-            }
-        }
-
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const datetime = `${dateInput.value}T${timeSelect.value}`;
             const data = {
                 name: form.name.value,
                 phone: form.phone.value,
-                date: datetime,
+                date: form.date.value,
                 created: Date.now()
             };
             try {
                 await addDoc(collection(db, 'bookings'), data);
                 alert('Booking saved!');
                 form.reset();
-                timeSelect.innerHTML = '';
-                availableDiv.textContent = '';
             } catch (err) {
                 console.error(err);
                 alert('Failed to save booking');
