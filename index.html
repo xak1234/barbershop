@@ -117,6 +117,13 @@
             letter-spacing: 0.5px;
         }
 
+        .gmt-time {
+            color: #666;
+            font-size: 0.8em;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
         .content-wrapper {
             position: relative;
             padding: 20px;
@@ -309,12 +316,38 @@
 
         .booking-form label {
             font-weight: 600;
+            color: #cc0000;
+            text-align: center;
         }
 
         .booking-form input {
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 4px;
+        }
+
+        .booking-form input[type="date"] {
+            padding: 15px;
+            font-size: 16px;
+            min-height: 50px;
+            color: transparent;
+            position: relative;
+        }
+
+        .booking-form input[type="date"]::-webkit-calendar-picker-indicator {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            opacity: 1;
+        }
+
+        .booking-form input[type="date"]:focus,
+        .booking-form input[type="date"]:valid {
+            color: #333;
         }
 
         .booking-form button {
@@ -328,6 +361,36 @@
 
         .booking-form button.submit-btn {
             margin-top: 10px;
+        }
+
+        .booking-form .close-btn {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background: #cc0000;
+            color: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            z-index: 10;
+        }
+
+        .booking-form .close-btn:hover {
+            background: #aa0000;
+        }
+
+        .booking-form select option:disabled {
+            color: #ff0000 !important;
+            font-weight: bold !important;
+            background-color: #ffe6e6 !important;
         }
 
         .qr-title {
@@ -583,6 +646,7 @@
             flex-direction: column;
             gap: 10px;
             margin-top: 10px;
+            position: relative;
         }
 
         .booking-form button.submit-btn {
@@ -598,6 +662,7 @@
         <div class="contact-info">
             <span class="opening-hours">Open till 7pm 7 Days A Week</span>
             <span class="phone-number">07951 550158</span>
+            <span class="gmt-time" id="gmt-time"></span>
         </div>
     </div>
 
@@ -605,6 +670,7 @@
         <button type="button" id="show-form-btn">Make a Booking</button>
         <form id="booking-form">
             <div class="form-fields" id="form-fields">
+                <button type="button" id="close-form-btn" class="close-btn">×</button>
                 <label for="name">Name</label>
                 <input type="text" id="name" name="name" required>
                 <label for="phone">Phone</label>
@@ -631,7 +697,12 @@
     </div>
 
     <div id="admin-panel" style="display:none;">
-        <h2>All Bookings (Admin)</h2>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+            <h2 style="margin: 0;">All Bookings (Admin)</h2>
+            <button id="email-bookings-btn" style="background: #cc0000; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 16px;" title="Email bookings list">
+                ✉️
+            </button>
+        </div>
         <table id="admin-bookings"></table>
     </div>
 
@@ -758,6 +829,26 @@
         // Test connection when page loads
         testFirebaseConnection();
 
+        // Update GMT time and date
+        function updateGMTTime() {
+            const now = new Date();
+            const gmtTime = now.toLocaleString('en-GB', {
+                timeZone: 'GMT',
+                weekday: 'short',
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('gmt-time').textContent = gmtTime + ' GMT';
+        }
+
+        // Update time immediately and then every second
+        updateGMTTime();
+        setInterval(updateGMTTime, 1000);
+
         const ADMIN_PIN = '1234';
 
         const phoneEl = document.querySelector('.phone-number');
@@ -783,6 +874,12 @@
             this.style.display = 'none';
         });
 
+        // Add close button functionality
+        document.getElementById('close-form-btn').addEventListener('click', function() {
+            document.getElementById('form-fields').classList.remove('show');
+            document.getElementById('show-form-btn').style.display = 'block';
+        });
+
         function addOneHour(t) {
             const [h, m] = t.split(':').map(Number);
             return String(h + 1).padStart(2, '0') + ':' + String(m).padStart(2, '0');
@@ -790,6 +887,10 @@
 
         const dateInput = document.getElementById('date');
         const timeSelect = document.getElementById('time');
+        
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.min = today;
         
         // Store all available times
         const allTimes = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
@@ -859,24 +960,24 @@
                 // Clear loading and set default option
                 timeSelect.innerHTML = '<option value="">Select a time</option>';
                 
-                // Add only available times to dropdown
+                // Add ALL times to dropdown, but disable and highlight booked ones
                 allTimes.forEach(time => {
-                    if (!bookedTimes.includes(time)) {
-                        const option = document.createElement('option');
-                        option.value = time;
-                        option.textContent = time;
-                        timeSelect.appendChild(option);
-                    }
-                });
-                
-                // If no times available, show message
-                if (timeSelect.children.length === 1) {
                     const option = document.createElement('option');
-                    option.value = '';
-                    option.textContent = 'No times available for this date';
-                    option.disabled = true;
+                    option.value = time;
+                    
+                    if (bookedTimes.includes(time)) {
+                        // Time is booked - disable and mark as unavailable
+                        option.disabled = true;
+                        option.textContent = time + ' (BOOKED)';
+                        option.style.color = 'red';
+                        option.style.fontWeight = 'bold';
+                    } else {
+                        // Time is available
+                        option.textContent = time;
+                    }
+                    
                     timeSelect.appendChild(option);
-                }
+                });
                 
                 timeSelect.disabled = false;
                 
@@ -907,16 +1008,44 @@
                 alert('Please enter your name');
                 return;
             }
+            
+            // Validate phone number (UK format)
+            const phoneRegex = /^(\+44|0)[1-9]\d{8,10}$/;
             if (!phone) {
                 alert('Please enter your phone number');
                 return;
             }
+            if (!phoneRegex.test(phone.replace(/\s/g, ''))) {
+                alert('Please enter a valid UK phone number (e.g., 07123456789 or +447123456789)');
+                return;
+            }
+            
             if (!date) {
                 alert('Please select a date');
                 return;
             }
+            
+            // Validate date is not in the past
+            const selectedDate = new Date(date);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            if (selectedDate < today) {
+                alert('Please select a date that is today or in the future');
+                return;
+            }
+            
             if (!time) {
                 alert('Please select an available time');
+                return;
+            }
+            
+            // Validate time is not in the past (if date is today)
+            const selectedDateTime = new Date(date + 'T' + time);
+            const now = new Date();
+            
+            if (selectedDateTime < now) {
+                alert('Please select a time that is in the future');
                 return;
             }
 
@@ -1001,6 +1130,52 @@
                 table.appendChild(tr);
             }
         }
+
+        // Email bookings functionality
+        document.getElementById('email-bookings-btn').addEventListener('click', async () => {
+            try {
+                const snap = await getDocs(collection(db, 'bookings'));
+                let bookingsList = 'The Barber Shop - Bookings List\n\n';
+                
+                if (snap.empty) {
+                    bookingsList += 'No bookings found.\n';
+                } else {
+                    bookingsList += 'Date\t\tTime\t\tName\t\tPhone\n';
+                    bookingsList += '='.repeat(60) + '\n';
+                    
+                    // Sort bookings by date and time
+                    const bookings = [];
+                    snap.forEach(s => {
+                        const d = s.data();
+                        bookings.push(d);
+                    });
+                    
+                    bookings.sort((a, b) => {
+                        const dateA = new Date(a.date + 'T' + a.startTime);
+                        const dateB = new Date(b.date + 'T' + b.startTime);
+                        return dateA - dateB;
+                    });
+                    
+                    bookings.forEach(booking => {
+                        bookingsList += `${booking.date}\t${booking.startTime}\t${booking.name}\t${booking.phone}\n`;
+                    });
+                }
+                
+                bookingsList += '\n\nGenerated on: ' + new Date().toLocaleString();
+                
+                // Create mailto link
+                const subject = encodeURIComponent('The Barber Shop - Bookings List');
+                const body = encodeURIComponent(bookingsList);
+                const mailtoLink = `mailto:admin@thebarbershop.com?subject=${subject}&body=${body}`;
+                
+                // Open email client
+                window.location.href = mailtoLink;
+                
+            } catch (error) {
+                console.error('Email bookings error:', error);
+                alert('Failed to generate bookings email. Please try again.');
+            }
+        });
     </script>
 </body>
 </html>
