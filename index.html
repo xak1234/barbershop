@@ -9,7 +9,7 @@
         body {
             margin: 0;
             padding: 10px;
-            background: linear-gradient(to bottom, #e5e5e5, #b0b0b0);
+            background: url('images/barb.jpg') center center/cover no-repeat, linear-gradient(to bottom, #c0c0c0, #808080);
             min-height: 100vh;
             font-family: Arial, sans-serif;
         }
@@ -28,7 +28,7 @@
             border-radius: 8px;
             margin-bottom: 30px;
             position: relative;
-            gap: 8px;
+            gap: 2px;
         }
 
         .top-bar::before {
@@ -51,7 +51,7 @@
         .top-bar h1 {
             font-family: 'Bebas Neue', sans-serif;
             color: #cc0000;
-            margin: 0 0 5px 0;
+            margin: 0;
             font-size: 3.5em;
             text-shadow: 3px 3px 6px rgba(0,0,0,0.3),
                          -2px -2px 0 #fff,
@@ -64,24 +64,36 @@
             padding: 8px 20px;
             background: rgba(255, 255, 255, 0.5);
             border-radius: 4px;
+            -webkit-transform: scale(1.02);
             transform: scale(1.02);
+            -webkit-transition: -webkit-transform 0.3s ease;
             transition: transform 0.3s ease;
             font-weight: 900;
         }
 
         .top-bar h1:hover {
+            -webkit-transform: scale(1.05);
             transform: scale(1.05);
         }
 
         .top-bar img {
             height: 70px;
-            margin-top: 5px;
+            margin-top: 0;
+            cursor: pointer;
+            -webkit-tap-highlight-color: rgba(204, 0, 0, 0.2);
+            touch-action: manipulation;
+            transition: transform 0.2s ease;
+        }
+
+        .top-bar img:hover {
+            -webkit-transform: scale(1.05);
+            transform: scale(1.05);
         }
 
         .address, .contact-info {
             color: #333;
             font-size: 1em;
-            margin-top: 5px;
+            margin-top: 0;
             text-align: center;
             padding: 8px 15px;
             background: rgba(255, 255, 255, 0.6);
@@ -115,6 +127,20 @@
             font-weight: 800;
             text-decoration: none;
             letter-spacing: 0.5px;
+            font-size: 1.1em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            cursor: pointer;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: rgba(204, 0, 0, 0.2);
+            touch-action: manipulation;
+            pointer-events: auto;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
         .gmt-time {
@@ -153,6 +179,7 @@
             max-height: 400px;
             object-fit: contain;
             border-radius: 4px;
+            -webkit-transition: -webkit-transform 0.3s ease;
             transition: transform 0.3s ease;
             background-color: #f5f5f5;
             padding: 10px;
@@ -223,6 +250,7 @@
             padding: 20px;
             border-radius: 6px;
             background: linear-gradient(to bottom, #ffffff, #f9f9f9);
+            -webkit-transition: -webkit-transform 0.2s ease, -webkit-box-shadow 0.2s ease;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             border: 1px solid #eaeaea;
             box-shadow: 0 4px 8px rgba(0,0,0,0.08);
@@ -247,6 +275,7 @@
             aspect-ratio: 4/3;
             object-fit: cover;
             border-radius: 4px;
+            -webkit-transition: -webkit-transform 0.3s ease, border-color 0.3s ease;
             transition: transform 0.3s ease, border-color 0.3s ease;
             background-color: #f5f5f5;
             padding: 0;
@@ -255,6 +284,7 @@
         }
 
         .photo-gallery img:hover {
+            -webkit-transform: scale(1.02);
             transform: scale(1.02);
             border-color: #333333;
         }
@@ -263,7 +293,9 @@
         .photo-gallery img:nth-child(2),
         .photo-gallery img:nth-child(3),
         .photo-gallery img:nth-child(4) {
+            -webkit-filter: grayscale(100%);
             filter: grayscale(100%);
+            -webkit-transition: -webkit-filter 0.3s ease, -webkit-transform 0.3s ease, border-color 0.3s ease;
             transition: filter 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
         }
 
@@ -271,7 +303,9 @@
         .photo-gallery img:nth-child(2):hover,
         .photo-gallery img:nth-child(3):hover,
         .photo-gallery img:nth-child(4):hover {
+            -webkit-filter: grayscale(0%);
             filter: grayscale(0%);
+            -webkit-transform: scale(1.02);
             transform: scale(1.02);
             border-color: #333333;
         }
@@ -318,12 +352,26 @@
             font-weight: 600;
             color: #cc0000;
             text-align: center;
+            display: block;
+            margin: 0 auto;
         }
 
         .booking-form input {
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 4px;
+        }
+
+        .booking-form input[type="text"],
+        .booking-form input[type="tel"] {
+            background: #666;
+            color: white;
+            border: 1px solid #555;
+        }
+
+        .booking-form input[type="text"]::placeholder,
+        .booking-form input[type="tel"]::placeholder {
+            color: #ccc;
         }
 
         .booking-form input[type="date"] {
@@ -337,12 +385,18 @@
             border: 2px solid #cc0000;
             border-radius: 8px;
             cursor: pointer;
+            -webkit-transition: all 0.3s ease;
             transition: all 0.3s ease;
+            margin: 0 auto;
+            display: block;
+            width: 100%;
+            max-width: 300px;
         }
 
         .booking-form input[type="date"]:focus {
             outline: none;
             border-color: #aa0000;
+            -webkit-box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.1);
             box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.1);
         }
 
@@ -354,6 +408,7 @@
             position: absolute;
             top: 50%;
             left: 50%;
+            -webkit-transform: translate(-50%, -50%);
             transform: translate(-50%, -50%);
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23cc0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>') no-repeat center;
             background-size: contain;
@@ -373,6 +428,7 @@
             position: absolute;
             top: 50%;
             left: 50%;
+            -webkit-transform: translate(-50%, -50%);
             transform: translate(-50%, -50%);
             color: #666;
             font-size: 14px;
@@ -391,6 +447,36 @@
             padding: 10px;
             border-radius: 4px;
             cursor: pointer;
+            font-size: 1.2em;
+            font-weight: 600;
+            -webkit-animation: shudder 2s ease-in-out infinite;
+            animation: shudder 2s ease-in-out infinite;
+        }
+
+        @-webkit-keyframes shudder {
+            0%, 100% { -webkit-transform: translateX(0); transform: translateX(0); }
+            10% { -webkit-transform: translateX(-2px); transform: translateX(-2px); }
+            20% { -webkit-transform: translateX(2px); transform: translateX(2px); }
+            30% { -webkit-transform: translateX(-2px); transform: translateX(-2px); }
+            40% { -webkit-transform: translateX(2px); transform: translateX(2px); }
+            50% { -webkit-transform: translateX(-1px); transform: translateX(-1px); }
+            60% { -webkit-transform: translateX(1px); transform: translateX(1px); }
+            70% { -webkit-transform: translateX(-1px); transform: translateX(-1px); }
+            80% { -webkit-transform: translateX(1px); transform: translateX(1px); }
+            90% { -webkit-transform: translateX(0); transform: translateX(0); }
+        }
+
+        @keyframes shudder {
+            0%, 100% { -webkit-transform: translateX(0); transform: translateX(0); }
+            10% { -webkit-transform: translateX(-2px); transform: translateX(-2px); }
+            20% { -webkit-transform: translateX(2px); transform: translateX(2px); }
+            30% { -webkit-transform: translateX(-2px); transform: translateX(-2px); }
+            40% { -webkit-transform: translateX(2px); transform: translateX(2px); }
+            50% { -webkit-transform: translateX(-1px); transform: translateX(-1px); }
+            60% { -webkit-transform: translateX(1px); transform: translateX(1px); }
+            70% { -webkit-transform: translateX(-1px); transform: translateX(-1px); }
+            80% { -webkit-transform: translateX(1px); transform: translateX(1px); }
+            90% { -webkit-transform: translateX(0); transform: translateX(0); }
         }
 
         .booking-form button.submit-btn {
@@ -463,18 +549,18 @@
 
             .top-bar {
                 padding: 12px;
-                gap: 6px;
+                gap: 1px;
             }
 
             .top-bar h1 {
                 font-size: 2.8em;
                 padding: 6px 15px;
-                margin: 0 0 4px 0;
+                margin: 0;
             }
 
             .top-bar img {
                 height: 60px;
-                margin-top: 4px;
+                margin-top: 0;
             }
 
             .featured-photos,
@@ -512,18 +598,18 @@
         @media (max-width: 480px) {
             .top-bar {
                 padding: 10px;
-                gap: 4px;
+                gap: 1px;
             }
 
             .top-bar h1 {
                 font-size: 2.2em;
                 padding: 5px 12px;
-                margin: 0 0 3px 0;
+                margin: 0;
             }
 
             .top-bar img {
                 height: 50px;
-                margin-top: 3px;
+                margin-top: 0;
             }
 
             .reviews-title {
@@ -705,7 +791,7 @@
         <div class="address">65 Armley Ridge Rd, Armley,<br>Leeds LS12 3LD</div>
         <div class="contact-info">
             <span class="opening-hours">Open till 7pm 7 Days A Week</span>
-            <span class="phone-number">07951 550158</span>
+            <span class="phone-number"><span style="color: #cc0000; font-size: 1.2em;">★★★</span> 07951 550158 <span style="color: #cc0000; font-size: 1.2em;">★★★</span></span>
             <span class="gmt-time" id="gmt-time"></span>
         </div>
     </div>
@@ -875,11 +961,11 @@
         // Test connection when page loads
         testFirebaseConnection();
 
-        // Update GMT time and date
+        // Update UK time and date
         function updateGMTTime() {
             const now = new Date();
-            const gmtTime = now.toLocaleString('en-GB', {
-                timeZone: 'GMT',
+            const ukTime = now.toLocaleString('en-GB', {
+                timeZone: 'Europe/London',
                 weekday: 'short',
                 day: '2-digit',
                 month: '2-digit',
@@ -888,7 +974,14 @@
                 minute: '2-digit',
                 second: '2-digit'
             });
-            document.getElementById('gmt-time').textContent = gmtTime + ' GMT';
+            
+            // Determine if we're in BST or GMT
+            const timeZoneName = now.toLocaleString('en-GB', {
+                timeZone: 'Europe/London',
+                timeZoneName: 'short'
+            }).split(' ').pop();
+            
+            document.getElementById('gmt-time').textContent = ukTime + ' ' + timeZoneName;
         }
 
         // Update time immediately and then every second
@@ -898,21 +991,107 @@
         const ADMIN_PIN = '1234';
 
         const phoneEl = document.querySelector('.phone-number');
+        const shopLogo = document.querySelector('.top-bar img');
         let tapCount = 0;
         let tapTimer;
-        phoneEl.addEventListener('click', () => {
+        let lastTapTime = 0;
+        let logoTapCount = 0;
+        let logoTapTimer;
+        let lastLogoTapTime = 0;
+        
+        function handleTap() {
+            const currentTime = new Date().getTime();
+            const timeDiff = currentTime - lastTapTime;
+            
+            // Reset if too much time has passed
+            if (timeDiff > 1000) {
+                tapCount = 0;
+            }
+            
             tapCount++;
+            lastTapTime = currentTime;
+            
             clearTimeout(tapTimer);
-            tapTimer = setTimeout(() => tapCount = 0, 1000);
+            tapTimer = setTimeout(() => {
+                tapCount = 0;
+                lastTapTime = 0;
+            }, 1000);
+            
             if (tapCount === 10) {
                 tapCount = 0;
+                lastTapTime = 0;
                 const pin = prompt('Admin PIN');
                 if (pin === ADMIN_PIN) {
                     document.getElementById('admin-panel').style.display = 'block';
                     loadAdminBookings();
                 }
             }
-        });
+        }
+
+        function handleLogoTap() {
+            const currentTime = new Date().getTime();
+            const timeDiff = currentTime - lastLogoTapTime;
+            
+            // Reset if too much time has passed
+            if (timeDiff > 1000) {
+                logoTapCount = 0;
+            }
+            
+            logoTapCount++;
+            lastLogoTapTime = currentTime;
+            
+            clearTimeout(logoTapTimer);
+            logoTapTimer = setTimeout(() => {
+                logoTapCount = 0;
+                lastLogoTapTime = 0;
+            }, 1000);
+            
+            if (logoTapCount === 2) {
+                logoTapCount = 0;
+                lastLogoTapTime = 0;
+                const pin = prompt('Admin PIN');
+                if (pin === ADMIN_PIN) {
+                    document.getElementById('admin-panel').style.display = 'block';
+                    loadAdminBookings();
+                }
+            }
+        }
+        
+        function handleTouch(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            handleTap();
+        }
+        
+        function handleClick(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            handleTap();
+        }
+
+        function handleLogoClick(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            handleLogoTap();
+        }
+
+        function handleLogoTouch(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            handleLogoTap();
+        }
+        
+        // Add multiple event listeners for maximum mobile compatibility
+        phoneEl.addEventListener('click', handleClick);
+        phoneEl.addEventListener('touchstart', handleTouch, { passive: false });
+        phoneEl.addEventListener('touchend', handleTouch, { passive: false });
+        phoneEl.addEventListener('mousedown', handleClick);
+        
+        // Add event listeners for the shop logo
+        shopLogo.addEventListener('click', handleLogoClick);
+        shopLogo.addEventListener('touchstart', handleLogoTouch, { passive: false });
+        shopLogo.addEventListener('touchend', handleLogoTouch, { passive: false });
+        shopLogo.addEventListener('mousedown', handleLogoClick);
 
         // Add this new code for showing the form
         document.getElementById('show-form-btn').addEventListener('click', function() {
