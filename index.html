@@ -382,7 +382,7 @@
             padding: 15px;
             font-size: 16px;
             min-height: 50px;
-            color: transparent;
+            color: #333;
             position: relative;
             text-align: center;
             background: #f8f9fa;
@@ -395,6 +395,7 @@
             display: block;
             width: 100%;
             max-width: 300px;
+            box-sizing: border-box;
         }
 
         .booking-form input[type="date"]:focus {
@@ -407,15 +408,8 @@
         .booking-form input[type="date"]::-webkit-calendar-picker-indicator {
             cursor: pointer;
             opacity: 1;
-            width: 30px;
-            height: 30px;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            -webkit-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%);
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23cc0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>') no-repeat center;
-            background-size: contain;
+            width: 24px;
+            height: 24px;
         }
 
         .booking-form input[type="date"]::-webkit-inner-spin-button,
@@ -427,22 +421,7 @@
             color: #333;
         }
 
-        .booking-form input[type="date"]::before {
-            content: "📅 Select Date";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            -webkit-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%);
-            color: #666;
-            font-size: 14px;
-            pointer-events: none;
-            z-index: 1;
-        }
 
-        .booking-form input[type="date"]:valid::before {
-            display: none;
-        }
 
         .booking-form button {
             background: #cc0000;
@@ -485,6 +464,8 @@
 
         .booking-form button.submit-btn {
             margin-top: 10px;
+            -webkit-animation: none;
+            animation: none;
         }
 
         .booking-form .close-btn {
@@ -785,7 +766,281 @@
 
         .booking-form button.submit-btn {
             margin-top: 10px;
+            -webkit-animation: none;
+            animation: none;
         }
+
+        /* ─── Enhanced booking section ─── */
+        #show-form-btn {
+            background: linear-gradient(135deg, #cc0000, #990000);
+            color: #fff;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.25em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 14px rgba(204,0,0,0.4);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            -webkit-animation: none;
+            animation: none;
+            width: 100%;
+        }
+        #show-form-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(204,0,0,0.5);
+        }
+        #show-form-btn:active { transform: translateY(0); }
+
+        .manage-booking-btn {
+            background: transparent;
+            color: #cc0000;
+            border: 2px solid #cc0000;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 600;
+            margin-top: 6px;
+            transition: all 0.15s ease;
+            -webkit-animation: none;
+            animation: none;
+            width: 100%;
+        }
+        .manage-booking-btn:hover {
+            background: #cc0000;
+            color: #fff;
+        }
+
+        /* ─── Modal overlay ─── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.65);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .modal-overlay.open { display: flex; }
+
+        .modal-box {
+            background: #fff;
+            border-radius: 12px;
+            padding: 32px 28px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+            position: relative;
+            text-align: center;
+        }
+        .modal-box h2 {
+            margin: 0 0 18px;
+            color: #222;
+            font-size: 1.4em;
+        }
+        .modal-close {
+            position: absolute;
+            top: 12px; right: 16px;
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #888;
+            -webkit-animation: none;
+            animation: none;
+            line-height: 1;
+        }
+        .modal-close:hover { color: #333; }
+
+        /* Confirmation modal */
+        .confirm-icon { font-size: 3em; margin-bottom: 12px; }
+        .confirm-details {
+            background: #f8f8f8;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: left;
+            font-size: 0.95em;
+            line-height: 1.8;
+        }
+        .confirm-details strong { color: #cc0000; }
+        .booking-ref-box {
+            background: #cc0000;
+            color: #fff;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 16px 0;
+            font-size: 1.3em;
+            font-weight: 800;
+            letter-spacing: 3px;
+        }
+        .ref-hint {
+            font-size: 0.8em;
+            color: #666;
+            margin: 0;
+        }
+        .modal-ok-btn {
+            background: #cc0000;
+            color: #fff;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+            -webkit-animation: none;
+            animation: none;
+            width: 100%;
+        }
+        .modal-ok-btn:hover { background: #aa0000; }
+
+        /* Manage booking modal */
+        .manage-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+            margin: 8px 0 16px;
+            box-sizing: border-box;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .manage-input:focus { outline: none; border-color: #cc0000; }
+        .manage-input.phone-input { text-transform: none; letter-spacing: normal; }
+
+        .manage-lookup-btn {
+            background: #cc0000;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            -webkit-animation: none;
+            animation: none;
+            margin-bottom: 8px;
+        }
+        .manage-lookup-btn:hover { background: #aa0000; }
+
+        .manage-found-details {
+            background: #f8f8f8;
+            border-radius: 8px;
+            padding: 14px;
+            margin: 14px 0;
+            text-align: left;
+            font-size: 0.95em;
+            line-height: 1.8;
+        }
+
+        .manage-action-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .manage-action-btns button {
+            flex: 1;
+            padding: 11px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            -webkit-animation: none;
+            animation: none;
+        }
+        .btn-amend {
+            background: #0066cc;
+            color: #fff;
+        }
+        .btn-amend:hover { background: #0052a3; }
+        .btn-cancel-booking {
+            background: #cc0000;
+            color: #fff;
+        }
+        .btn-cancel-booking:hover { background: #aa0000; }
+
+        /* Amend sub-section (date+time pickers inside manage modal) */
+        .amend-section {
+            display: none;
+            text-align: left;
+            margin-top: 14px;
+        }
+        .amend-section.show { display: block; }
+        .amend-section label { font-weight: 600; color: #cc0000; display: block; margin-bottom: 4px; }
+        .amend-section input[type="date"],
+        .amend-section select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+            box-sizing: border-box;
+            margin-bottom: 12px;
+        }
+        .amend-section input[type="date"]:focus,
+        .amend-section select:focus { outline: none; border-color: #0066cc; }
+        .btn-confirm-amend {
+            background: #0066cc;
+            color: #fff;
+            border: none;
+            padding: 11px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            -webkit-animation: none;
+            animation: none;
+        }
+        .btn-confirm-amend:hover { background: #0052a3; }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(40px);
+            background: #222;
+            color: #fff;
+            padding: 13px 24px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 2000;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast.success { background: #1a7a1a; }
+        .toast.error { background: #cc0000; }
+
+        /* Loading spinner inside selects */
+        .spinner-inline {
+            display: inline-block;
+            width: 14px; height: 14px;
+            border: 2px solid #ccc;
+            border-top-color: #cc0000;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -801,36 +1056,79 @@
     </div>
 
     <div class="booking-form">
-        <button type="button" id="show-form-btn">Make a Booking</button>
+        <button type="button" id="show-form-btn">📅 Book Your Appointment</button>
+        <button type="button" class="manage-booking-btn" id="manage-booking-btn">Manage / Amend My Booking</button>
         <form id="booking-form">
             <div class="form-fields" id="form-fields">
                 <button type="button" id="close-form-btn" class="close-btn">×</button>
                 <label for="name">Name</label>
-                <input type="text" id="name" name="name" required>
+                <input type="text" id="name" name="name" placeholder="Your full name" required>
                 <label for="phone">Phone</label>
-                <input type="tel" id="phone" name="phone" required>
+                <input type="tel" id="phone" name="phone" placeholder="07xxx xxxxxx" required>
                 <label for="date">Date</label>
                 <input type="date" id="date" name="date" required>
 
                 <div class="time-field" id="time-field">
-                    <label for="time">Time</label>
+                    <label for="time">Available Times</label>
                     <select id="time" name="time" required>
-                    <option value="09:00">09:00</option>
-                    <option value="10:00">10:00</option>
-                    <option value="11:00">11:00</option>
-                    <option value="12:00">12:00</option>
-                    <option value="13:00">13:00</option>
-                    <option value="14:00">14:00</option>
-                    <option value="15:00">15:00</option>
-                    <option value="16:00">16:00</option>
-                    <option value="17:00">17:00</option>
-                    <option value="18:00">18:00</option>
-                </select>
+                        <option value="">Select a time</option>
+                    </select>
                 </div>
-                <button type="submit" class="submit-btn">Submit Booking</button>
+                <button type="submit" class="submit-btn">Confirm Booking</button>
             </div>
         </form>
     </div>
+
+    <!-- Booking Confirmation Modal -->
+    <div class="modal-overlay" id="confirm-modal">
+        <div class="modal-box">
+            <button class="modal-close" id="confirm-modal-close">×</button>
+            <div class="confirm-icon">✅</div>
+            <h2>Booking Confirmed!</h2>
+            <div class="confirm-details" id="confirm-details-text"></div>
+            <div class="booking-ref-box" id="confirm-ref"></div>
+            <p class="ref-hint">📋 Save your reference number — you'll need it to amend or cancel your booking.</p>
+            <button class="modal-ok-btn" id="confirm-modal-ok">Done</button>
+        </div>
+    </div>
+
+    <!-- Manage Booking Modal -->
+    <div class="modal-overlay" id="manage-modal">
+        <div class="modal-box">
+            <button class="modal-close" id="manage-modal-close">×</button>
+            <h2>Manage My Booking</h2>
+
+            <div id="manage-lookup-section">
+                <p style="color:#666;font-size:0.9em;margin:0 0 12px">Enter the phone number and reference from your confirmation.</p>
+                <label style="font-weight:600;color:#cc0000;font-size:0.9em;">Phone Number</label>
+                <input type="tel" class="manage-input phone-input" id="manage-phone" placeholder="07xxx xxxxxx">
+                <label style="font-weight:600;color:#cc0000;font-size:0.9em;">Booking Reference</label>
+                <input type="text" class="manage-input" id="manage-ref" placeholder="BS-XXXX" maxlength="7">
+                <button class="manage-lookup-btn" id="manage-lookup-btn">Find My Booking</button>
+            </div>
+
+            <div id="manage-found-section" style="display:none;">
+                <div class="manage-found-details" id="manage-found-details"></div>
+                <div class="manage-action-btns">
+                    <button class="btn-amend" id="btn-amend">✏️ Change Date/Time</button>
+                    <button class="btn-cancel-booking" id="btn-cancel-booking">❌ Cancel Booking</button>
+                </div>
+
+                <div class="amend-section" id="amend-section">
+                    <label for="amend-date">New Date</label>
+                    <input type="date" id="amend-date">
+                    <label for="amend-time">Available Times</label>
+                    <select id="amend-time">
+                        <option value="">Select a date first</option>
+                    </select>
+                    <button class="btn-confirm-amend" id="btn-confirm-amend">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
 
     <div id="admin-panel" style="display:none;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
@@ -929,6 +1227,7 @@
             getDocs,
             deleteDoc,
             doc,
+            updateDoc,
             query,
             where
         } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
@@ -1224,139 +1523,339 @@
             }
         }
 
+        const TELEGRAM_BOT_TOKEN = '8662532429:AAGUeCBPtZrE9uUNXFXIxbiRlGVF6S_x6FA';
+        const TELEGRAM_CHAT_ID   = '830344908';
+
+        function generateRef() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let r = 'BS-';
+            for (let i = 0; i < 4; i++) r += chars[Math.floor(Math.random() * chars.length)];
+            return r;
+        }
+
+        async function sendTelegram(text) {
+            try {
+                const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: Number(TELEGRAM_CHAT_ID), text })
+                });
+                const json = await res.json();
+                if (!json.ok) console.error('Telegram error:', json);
+            } catch (err) {
+                console.error('Telegram fetch failed:', err);
+            }
+        }
+
+        function showToast(msg, type = '') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast show' + (type ? ' ' + type : '');
+            clearTimeout(t._timer);
+            t._timer = setTimeout(() => { t.className = 'toast'; }, 3500);
+        }
+
+        function openModal(id)  { document.getElementById(id).classList.add('open');    }
+        function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
         const form = document.getElementById('booking-form');
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const date = form.date.value;
-            const time = form.time.value;
-            const name = form.name.value.trim();
+            const date  = form.date.value;
+            const time  = form.time.value;
+            const name  = form.name.value.trim();
             const phone = form.phone.value.trim();
 
-            // Validate form data
-            if (!name) {
-                alert('Please enter your name');
-                return;
-            }
-            
-            // Validate phone number (UK format)
+            if (!name)  { showToast('Please enter your name', 'error'); return; }
+
             const phoneRegex = /^(\+44|0)[1-9]\d{8,10}$/;
-            if (!phone) {
-                alert('Please enter your phone number');
-                return;
-            }
+            if (!phone) { showToast('Please enter your phone number', 'error'); return; }
             if (!phoneRegex.test(phone.replace(/\s/g, ''))) {
-                alert('Please enter a valid UK phone number (e.g., 07123456789 or +447123456789)');
-                return;
-            }
-            
-            if (!date) {
-                alert('Please select a date');
-                return;
-            }
-            
-            // Validate date is not in the past
-            const selectedDate = new Date(date);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
-            if (selectedDate < today) {
-                alert('Please select a date that is today or in the future');
-                return;
-            }
-            
-            if (!time) {
-                alert('Please select an available time');
-                return;
-            }
-            
-            // Validate time is not in the past (if date is today)
-            const selectedDateTime = new Date(date + 'T' + time);
-            const now = new Date();
-            
-            if (selectedDateTime < now) {
-                alert('Please select a time that is in the future');
+                showToast('Please enter a valid UK phone number (e.g. 07123 456789)', 'error');
                 return;
             }
 
+            if (!date) { showToast('Please select a date', 'error'); return; }
+
+            const selectedDate = new Date(date);
+            const todayMidnight = new Date();
+            todayMidnight.setHours(0, 0, 0, 0);
+            if (selectedDate < todayMidnight) { showToast('Please select a future date', 'error'); return; }
+
+            if (!time) { showToast('Please select an available time', 'error'); return; }
+
+            const selectedDateTime = new Date(date + 'T' + time);
+            if (selectedDateTime < new Date()) { showToast('Please select a future time slot', 'error'); return; }
+
+            const submitBtn = form.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saving…';
+
             try {
-                // Double-check for conflicts right before booking
                 const conflictCheck = await getDocs(query(
-                    collection(db, 'bookings'), 
-                    where('date', '==', date), 
+                    collection(db, 'bookings'),
+                    where('date', '==', date),
                     where('startTime', '==', time)
                 ));
-                
                 if (!conflictCheck.empty) {
-                    alert('Sorry, this time slot was just booked by someone else. Please select another time.');
-                    // Refresh available times
+                    showToast('That slot was just taken — please pick another time', 'error');
                     await updateAvailableTimes();
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Confirm Booking';
                     return;
                 }
 
+                const bookingRef = generateRef();
                 const data = {
-                    name: name,
-                    phone: phone,
-                    date: date,
+                    name, phone, date,
                     startTime: time,
                     endTime: addOneHour(time),
+                    bookingRef,
                     createdAt: Date.now()
                 };
-                
-                // Attempt to save the booking
+
                 await addDoc(collection(db, 'bookings'), data);
-                
-                alert('Booked !');
-                
-                // Reset form and hide it properly
+
+                // Show confirmation modal
+                const dateFormatted = new Date(date).toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+                document.getElementById('confirm-details-text').innerHTML =
+                    `<strong>Name:</strong> ${name}<br>` +
+                    `<strong>Phone:</strong> ${phone}<br>` +
+                    `<strong>Date:</strong> ${dateFormatted}<br>` +
+                    `<strong>Time:</strong> ${time} – ${addOneHour(time)}`;
+                document.getElementById('confirm-ref').textContent = bookingRef;
+                openModal('confirm-modal');
+
+                // Telegram notification
+                const msg = `📅 New Booking – The Barber Shop\n\nName: ${name}\nPhone: ${phone}\nDate: ${dateFormatted}\nTime: ${time}\nRef: ${bookingRef}`;
+                sendTelegram(msg);
+
                 form.reset();
                 document.getElementById('form-fields').classList.remove('show');
                 document.getElementById('show-form-btn').style.display = 'block';
                 document.getElementById('time-field').classList.remove('show');
-                
-                // Refresh the time slots to show the new booking is taken
                 await updateAvailableTimes();
-                
+
             } catch (err) {
                 console.error('Firebase error:', err);
-                if (err.code === 'permission-denied') {
-                    alert('Database access denied. Please contact the administrator.');
-                } else if (err.code === 'unavailable') {
-                    alert('Database temporarily unavailable. Please try again later.');
-                } else if (err.code === 'already-exists') {
-                    alert('This time slot is already booked. Please select another time.');
-                    await updateAvailableTimes();
-                } else {
-                    alert('Failed to save booking. Please try again or call us directly.');
-                }
+                const msg = err.code === 'permission-denied'
+                    ? 'Database access denied — please contact us directly.'
+                    : err.code === 'unavailable'
+                    ? 'Service temporarily unavailable — please try again shortly.'
+                    : 'Failed to save booking — please try again or call us.';
+                showToast(msg, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Confirm Booking';
             }
         });
 
-        async function loadAdminBookings() {
-            const table = document.getElementById('admin-bookings');
-            table.innerHTML = '<tr><th>Date</th><th>Time</th><th>Name</th><th>Phone</th><th></th></tr>';
+        // Confirmation modal close
+        document.getElementById('confirm-modal-close').addEventListener('click', () => closeModal('confirm-modal'));
+        document.getElementById('confirm-modal-ok').addEventListener('click', () => closeModal('confirm-modal'));
+        document.getElementById('confirm-modal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closeModal('confirm-modal');
+        });
+
+        // ─── Manage Booking ─────────────────────────────────────────────
+        let currentBookingDoc = null; // { id, data }
+
+        document.getElementById('manage-booking-btn').addEventListener('click', () => {
+            document.getElementById('manage-lookup-section').style.display = 'block';
+            document.getElementById('manage-found-section').style.display = 'none';
+            document.getElementById('manage-phone').value = '';
+            document.getElementById('manage-ref').value = '';
+            openModal('manage-modal');
+        });
+
+        document.getElementById('manage-modal-close').addEventListener('click', () => closeModal('manage-modal'));
+        document.getElementById('manage-modal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closeModal('manage-modal');
+        });
+
+        document.getElementById('manage-lookup-btn').addEventListener('click', async () => {
+            const phone = document.getElementById('manage-phone').value.trim();
+            const ref   = document.getElementById('manage-ref').value.trim().toUpperCase();
+
+            if (!phone || !ref) { showToast('Please enter both phone and reference', 'error'); return; }
+
+            const lookupBtn = document.getElementById('manage-lookup-btn');
+            lookupBtn.textContent = 'Searching…';
+            lookupBtn.disabled = true;
+
             try {
-                const snap = await getDocs(collection(db, 'bookings'));
+                const snap = await getDocs(query(
+                    collection(db, 'bookings'),
+                    where('bookingRef', '==', ref)
+                ));
+
+                let found = null;
                 snap.forEach(s => {
                     const d = s.data();
+                    if (d.phone.replace(/\s/g,'') === phone.replace(/\s/g,'')) {
+                        found = { id: s.id, data: d };
+                    }
+                });
+
+                if (!found) {
+                    showToast('No booking found — check the reference and phone number', 'error');
+                } else {
+                    currentBookingDoc = found;
+                    const d = found.data;
+                    const dateFormatted = new Date(d.date).toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+                    document.getElementById('manage-found-details').innerHTML =
+                        `<strong>Name:</strong> ${d.name}<br>` +
+                        `<strong>Date:</strong> ${dateFormatted}<br>` +
+                        `<strong>Time:</strong> ${d.startTime} – ${d.endTime}<br>` +
+                        `<strong>Ref:</strong> ${d.bookingRef}`;
+                    document.getElementById('amend-section').classList.remove('show');
+                    document.getElementById('amend-date').value = '';
+                    document.getElementById('amend-time').innerHTML = '<option value="">Select a date first</option>';
+                    document.getElementById('manage-lookup-section').style.display = 'none';
+                    document.getElementById('manage-found-section').style.display = 'block';
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Error looking up booking — please try again', 'error');
+            } finally {
+                lookupBtn.textContent = 'Find My Booking';
+                lookupBtn.disabled = false;
+            }
+        });
+
+        document.getElementById('btn-amend').addEventListener('click', () => {
+            const amendSec = document.getElementById('amend-section');
+            amendSec.classList.toggle('show');
+            if (amendSec.classList.contains('show')) {
+                const todayStr = new Date().toISOString().split('T')[0];
+                document.getElementById('amend-date').min = todayStr;
+            }
+        });
+
+        document.getElementById('amend-date').addEventListener('change', async () => {
+            const selectedDate = document.getElementById('amend-date').value;
+            const amendTimeSelect = document.getElementById('amend-time');
+            if (!selectedDate) return;
+
+            amendTimeSelect.innerHTML = '<option value="">Loading…</option>';
+            amendTimeSelect.disabled = true;
+
+            try {
+                const snap = await getDocs(query(collection(db, 'bookings'), where('date', '==', selectedDate)));
+                const bookedTimes = [];
+                snap.forEach(s => {
+                    const d = s.data();
+                    // Exclude the current booking's own slot
+                    if (s.id !== currentBookingDoc.id) bookedTimes.push(d.startTime);
+                });
+
+                amendTimeSelect.innerHTML = '<option value="">Select a time</option>';
+                allTimes.forEach(t => {
+                    const opt = document.createElement('option');
+                    opt.value = t;
+                    if (bookedTimes.includes(t)) {
+                        opt.disabled = true;
+                        opt.textContent = t + ' (BOOKED)';
+                    } else {
+                        opt.textContent = t;
+                    }
+                    amendTimeSelect.appendChild(opt);
+                });
+            } catch (_) {
+                amendTimeSelect.innerHTML = '<option value="">Unable to load — try again</option>';
+            } finally {
+                amendTimeSelect.disabled = false;
+            }
+        });
+
+        document.getElementById('btn-confirm-amend').addEventListener('click', async () => {
+            const newDate = document.getElementById('amend-date').value;
+            const newTime = document.getElementById('amend-time').value;
+            if (!newDate) { showToast('Please select a new date', 'error'); return; }
+            if (!newTime) { showToast('Please select a new time', 'error'); return; }
+
+            const confirmBtn = document.getElementById('btn-confirm-amend');
+            confirmBtn.textContent = 'Saving…';
+            confirmBtn.disabled = true;
+
+            try {
+                await updateDoc(doc(db, 'bookings', currentBookingDoc.id), {
+                    date: newDate,
+                    startTime: newTime,
+                    endTime: addOneHour(newTime)
+                });
+
+                const d = currentBookingDoc.data;
+                const dateFormatted = new Date(newDate).toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+                sendTelegram(`✏️ Booking Amended – The Barber Shop\n\nName: ${d.name}\nPhone: ${d.phone}\nNew Date: ${dateFormatted}\nNew Time: ${newTime}\nRef: ${d.bookingRef}`);
+
+                showToast('Booking updated successfully!', 'success');
+                closeModal('manage-modal');
+                await updateAvailableTimes();
+            } catch (err) {
+                console.error(err);
+                showToast('Failed to update — please try again', 'error');
+            } finally {
+                confirmBtn.textContent = 'Save Changes';
+                confirmBtn.disabled = false;
+            }
+        });
+
+        document.getElementById('btn-cancel-booking').addEventListener('click', async () => {
+            if (!currentBookingDoc) return;
+            const d = currentBookingDoc.data;
+
+            if (!confirm(`Cancel your booking on ${d.date} at ${d.startTime}?\nThis cannot be undone.`)) return;
+
+            try {
+                await deleteDoc(doc(db, 'bookings', currentBookingDoc.id));
+
+                sendTelegram(`❌ Booking Cancelled – The Barber Shop\n\nName: ${d.name}\nPhone: ${d.phone}\nDate: ${d.date}\nTime: ${d.startTime}\nRef: ${d.bookingRef}`);
+
+                showToast('Your booking has been cancelled.', 'success');
+                closeModal('manage-modal');
+                currentBookingDoc = null;
+                await updateAvailableTimes();
+            } catch (err) {
+                console.error(err);
+                showToast('Failed to cancel — please try again or call us', 'error');
+            }
+        });
+
+        // ─── Admin bookings ──────────────────────────────────────────────
+        async function loadAdminBookings() {
+            const table = document.getElementById('admin-bookings');
+            table.innerHTML = '<tr><th>Date</th><th>Time</th><th>Name</th><th>Phone</th><th>Ref</th><th></th></tr>';
+            try {
+                const snap = await getDocs(collection(db, 'bookings'));
+                const bookings = [];
+                snap.forEach(s => bookings.push({ id: s.id, data: s.data() }));
+                bookings.sort((a, b) => {
+                    const da = new Date(a.data.date + 'T' + a.data.startTime);
+                    const db2 = new Date(b.data.date + 'T' + b.data.startTime);
+                    return da - db2;
+                });
+                bookings.forEach(({ id, data: d }) => {
                     const tr = document.createElement('tr');
-                    tr.innerHTML = `<td>${d.date}</td><td>${d.startTime}</td><td>${d.name}</td><td>${d.phone}</td><td><button data-id="${s.id}">Delete</button></td>`;
+                    tr.innerHTML = `<td>${d.date}</td><td>${d.startTime}</td><td>${d.name}</td><td>${d.phone}</td><td style="font-family:monospace;font-weight:700">${d.bookingRef || '—'}</td><td><button data-id="${id}" style="background:#cc0000;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer">Delete</button></td>`;
                     table.appendChild(tr);
                 });
-                table.querySelectorAll('button').forEach(btn => {
+                table.querySelectorAll('button[data-id]').forEach(btn => {
                     btn.addEventListener('click', async () => {
+                        if (!confirm('Delete this booking?')) return;
                         try {
                             await deleteDoc(doc(db, 'bookings', btn.dataset.id));
                             loadAdminBookings();
                         } catch (error) {
                             console.error('Delete error:', error);
-                            alert('Failed to delete booking');
+                            showToast('Failed to delete booking', 'error');
                         }
                     });
                 });
             } catch (error) {
                 console.error('Load bookings error:', error);
                 const tr = document.createElement('tr');
-                tr.innerHTML = '<td colspan="5">Unable to load bookings - Database connection error</td>';
+                tr.innerHTML = '<td colspan="6">Unable to load bookings — database connection error</td>';
                 table.appendChild(tr);
             }
         }
