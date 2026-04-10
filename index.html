@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 
@@ -382,10 +382,10 @@
             padding: 15px;
             font-size: 16px;
             min-height: 50px;
-            color: #333;
+            color: #111 !important;`n            -webkit-text-fill-color: #111 !important;`n            color-scheme: light;
             position: relative;
             text-align: center;
-            background: #f8f9fa;
+            background: #ffffff !important;
             border: 2px solid #cc0000;
             border-radius: 8px;
             cursor: pointer;
@@ -1541,7 +1541,7 @@
                     body: JSON.stringify({ chat_id: Number(TELEGRAM_CHAT_ID), text })
                 });
                 const json = await res.json();
-                if (!json.ok) console.error('Telegram error:', json);
+                if (json.ok) { console.log('Telegram OK msg_id:', json.result.message_id); } else { console.error('Telegram API error:', JSON.stringify(json)); }
             } catch (err) {
                 console.error('Telegram fetch failed:', err);
             }
